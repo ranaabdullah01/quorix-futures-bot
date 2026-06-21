@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Quorix Futures Bot | 50+ Assets Paper Trading Terminal</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dark-theme.css">
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="crypto-spinner">
+                <div class="orbit"></div>
+                <div class="orbit"></div>
+                <div class="orbit"></div>
+                <div class="center-icon">📈</div>
+            </div>
+            <div class="loading-title">Quorix Futures Bot</div>
+            <div class="loading-message" id="loadingMessage">🔮 Analyzing the matrix...</div>
+            <div class="loading-progress">
+                <div class="bar" id="loadingBar"></div>
+            </div>
+            <div class="loading-percent" id="loadingPercent">0%</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <img src="assets/quorix_logo.png" alt="Quorix Logo" onerror="this.style.display='none'; this.parentElement.textContent='QF';">
+            </div>
+            <span class="logo-text">Quorix Futures Bot</span>
+        </div>
+        <div class="header-stats">
+            <div class="stat-chip">
+                <span class="chip-label">Balance</span>
+                <span class="chip-value" id="header-balance">$10k</span>
+            </div>
+            <div class="stat-chip">
+                <span class="chip-label">PnL</span>
+                <span class="chip-value" id="header-upnl">$0</span>
+            </div>
+            <div class="stat-chip">
+                <span class="chip-label">Win Rate</span>
+                <span class="chip-value" id="header-winrate">--</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard">
+        <!-- Side Panel -->
+        <aside class="side-panel">
+            <!-- Timeframe Selector -->
+            <div class="tf-selector">
+                <div class="tf-label">TIMEFRAME</div>
+                <div class="tf-buttons" id="tf-container"></div>
+            </div>
+
+            <!-- Countdown -->
+            <div class="countdown-card">
+                <div class="countdown-label">⏱️ Next candle</div>
+                <div class="countdown-display" id="countdown-display">--</div>
+                <div class="countdown-progress">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-container">
+                <input type="text" class="search-input" id="search-input" placeholder="🔍 Search crypto..." autocomplete="off">
+            </div>
+
+            <!-- Pair List / Watchlist -->
+            <div class="pair-list" id="pair-list-container"></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-area">
+            <!-- Signal Card -->
+            <div class="signal-card" id="signal-card">
+                <div class="signal-header">
+                    <div>
+                        <span id="signal-pair-name" class="signal-pair">BTC/USDT</span>
+                        <div id="signal-meta" class="signal-meta"></div>
+                    </div>
+                    <div class="signal-strength">
+                        <div class="score-ring">
+                            <svg width="56" height="56" viewBox="0 0 56 56">
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="#222836" stroke-width="3"/>
+                                <circle id="score-ring-path" cx="28" cy="28" r="24" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round"/>
+                            </svg>
+                            <div class="score-text" id="score-value">--</div>
+                        </div>
+                        <div>
+                            <div id="signal-direction" class="signal-direction">NEUTRAL</div>
+                            <div id="signal-confidence" class="signal-confidence">waiting</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="signal-details">
+                    <div id="signal-analysis" class="signal-analysis">✨ Select a pair from sidebar</div>
+                    
+                    <!-- Levels Grid -->
+                    <div class="level-grid" id="levels-container">
+                        <div class="level-item">
+                            <div class="level-label">🎯 Entry</div>
+                            <div id="level-entry" class="level-value">--</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">🛑 Stop Loss</div>
+                            <div id="level-sl" class="level-value">--</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">✅ Take Profit</div>
+                            <div id="level-tp" class="level-value">--</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">📊 Risk/Reward</div>
+                            <div id="level-rr" class="level-value">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Trade Buttons -->
+                    <div class="trade-buttons" id="trade-buttons-container">
+                        <button class="btn-long" onclick="openTradeModal('LONG')">▲ LONG</button>
+                        <button class="btn-short" onclick="openTradeModal('SHORT')">▼ SHORT</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="open">📂 OPEN (<span id="open-count">0</span>)</button>
+                <button class="tab-btn" data-tab="history">📜 HISTORY</button>
+                <button class="tab-btn" data-tab="metrics">📊 METRICS</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-open" class="tab-content">
+                <div class="table-wrapper">
+                    <table class="trade-table">
+                        <thead>
+                            <tr>
+                                <th>Pair</th>
+                                <th>Side</th>
+                                <th>Entry</th>
+                                <th>Size</th>
+                                <th>Lev</th>
+                                <th>SL</th>
+                                <th>TP</th>
+                                <th>Current</th>
+                                <th>PnL</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="open-positions-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-history" class="tab-content" style="display: none;">
+                <div class="table-wrapper">
+                    <table class="trade-table">
+                        <thead>
+                            <tr>
+                                <th>Closed</th>
+                                <th>Pair</th>
+                                <th>Side</th>
+                                <th>Entry</th>
+                                <th>Exit</th>
+                                <th>PnL</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-metrics" class="tab-content" style="display: none;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Win Rate</div>
+                        <div id="metric-wr" class="metric-value">--</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Trades</div>
+                        <div id="metric-total" class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Profit Factor</div>
+                        <div id="metric-pf" class="metric-value">--</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Expectancy</div>
+                        <div id="metric-exp" class="metric-value">--</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Today's PnL</div>
+                        <div id="metric-today-pnl" class="metric-value">$0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Best Trade</div>
+                        <div id="metric-best-trade" class="metric-value">--</div>
+                    </div>
+                </div>
+                <button class="reset-btn" id="clear-data-btn">🗑️ RESET ALL DATA</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Trade Modal -->
+    <div class="modal-bg" id="trade-modal">
+        <div class="modal-card">
+            <h3 id="modal-title" class="modal-title">Open LONG</h3>
+            <div class="modal-field">
+                <label class="modal-label">Amount (USDT)</label>
+                <input type="number" id="modal-amount" value="200" step="10" class="modal-input">
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Leverage</label>
+                <select id="modal-leverage" class="modal-select">
+                    <option value="5">5x</option>
+                    <option value="10" selected>10x</option>
+                    <option value="20">20x</option>
+                    <option value="50">50x</option>
+                </select>
+            </div>
+            <div id="modal-risk-info" class="modal-risk-info"></div>
+            <button id="modal-confirm" class="modal-confirm">Confirm Trade</button>
+            <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/loading.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
