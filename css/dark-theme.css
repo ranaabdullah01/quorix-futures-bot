@@ -1,0 +1,95 @@
+/* Dark theme overrides and additional styles */
+.dark-theme {
+    --bg-primary: #03050a;
+    --bg-secondary: #0c0f17;
+    --bg-tertiary: #12161f;
+    --text-primary: #eef2ff;
+    --text-secondary: #8b92b0;
+    --border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollbar styling for dark theme */
+.dark-theme ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.dark-theme ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+    background: #2a2f3f;
+    border-radius: 4px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+    background: #3a3f4f;
+}
+
+/* Glass morphism effects */
+.glass {
+    background: rgba(12, 15, 23, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Gradient text utility */
+.gradient-text {
+    background: linear-gradient(135deg, #f0f4ff, #8b9cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.live-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+.smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects */
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Status colors */
+.status-bullish { color: var(--accent-green); }
+.status-bearish { color: var(--accent-red); }
+.status-neutral { color: var(--accent-amber); }
+
+/* Card variants */
+.card-elevated {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.card-glass {
+    background: rgba(12, 15, 23, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 16px;
+}
